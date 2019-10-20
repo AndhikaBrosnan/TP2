@@ -3,10 +3,11 @@ enum Tipe{
 }
 
 public class Goods {
-    String id;
-    String nama;
-    int harga;
-    Tipe tipe;
+    private String id;
+    private String nama;
+    private int harga;
+    private Tipe tipe;
+    private int jml_produk;
 
     public Goods() {
     }
