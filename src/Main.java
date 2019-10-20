@@ -28,7 +28,7 @@ public class Main {
             switch (cmd[0]) {
                 case "t":
                     System.out.println("=+=+=+=+=+=+=+=+=+=+=+=+=+=+Menambah BARANG=+=+=+=+=+=+=+=+=+=+=+=+=+=+");
-                    arrGoods.add(new Goods("DUMMY", 4444, recCheckId("HAHA6", arrGoods.size() - 1), Tipe.NETRAL));
+//                    arrGoods.add(new Goods("DUMMY", 4444, recCheckId("HAHA6", arrGoods.size() - 1), Tipe.NETRAL));
                     break;
                 case "detail":
                     System.out.println("=+=+=+=+=+=+=+=+=+=+=+=+=+=+Menampilkan DETAIL=+=+=+=+=+=+=+=+=+=+=+=+=+=+");
@@ -42,15 +42,14 @@ public class Main {
                     break;
             }
 
-            for (int i = 0; i < arrGoods.size(); i++) {
-                System.out.println("Nama: " + arrGoods.get(i).getNama() + ", ID: " + arrGoods.get(i).getId());
-            }
+//            for (int i = 0; i < arrGoods.size(); i++) {
+//                System.out.println("Nama: " + arrGoods.get(i).getNama() + ", ID: " + arrGoods.get(i).getId());
+//            }
         }
     }
 
     public static String recFixId(String id, int idx) {
 
-        // TODO: 10/20/2019 di sort dulu
         ArrayList<Integer> tmpAngka = new ArrayList<>();
 
         for (int i = 0; i < arrGoods.size() ; i++) {
@@ -61,7 +60,6 @@ public class Main {
 
         int angkaID = Integer.parseInt(id.substring(4));
 
-        // TODO: 10/20/2019 cek duplikat
         for (int i = 0; i < tmpAngka.size(); i++) {
             if (angkaID == tmpAngka.get(i)){
                 angkaID+=1;
