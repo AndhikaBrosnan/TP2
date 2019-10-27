@@ -1,3 +1,4 @@
+import javax.print.DocFlavor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
@@ -24,7 +25,11 @@ public class IndoStorSystem {
         String nm_produk;
         int hrg_produk;
         int jml_produk;
-        String id_produk;
+        String id_lama = "";
+        String id_produk = "";
+        String tipe_produkString;
+        Tipe tipe_produk;
+        String tipe_id_prod;
 
         //store
         String nm_store;
@@ -59,6 +64,8 @@ public class IndoStorSystem {
 
                     System.out.print("Masukan nama barang: ");
                     nm_produk = input.nextLine();
+                    System.out.print("Masukan tipe barang: ");
+                    tipe_produkString = input.nextLine();
                     System.out.print("Masukan harga barang: ");
                     hrg_produk = input.nextInt();
                     System.out.print("Masukan kuantitas barang: ");
@@ -98,8 +105,8 @@ public class IndoStorSystem {
                     } else {
                         for (int j = 0; j < str.getList_store().get(temp_0).getList_produk().size(); j++) {
                             System.out.println(". Nama: " + str.getList_store().get(temp_0).getList_produk().get(j).getNama()
-                                    +" Harga: " + str.getList_store().get(temp_0).getList_produk().get(j).getHarga()
-                                    + " Id: "+ str.getList_store().get(temp_0).getList_produk().get(j).getId());
+                                    + " Harga: " + str.getList_store().get(temp_0).getList_produk().get(j).getHarga()
+                                    + " Id: " + str.getList_store().get(temp_0).getList_produk().get(j).getId());
 
                         }
                     }
@@ -134,31 +141,65 @@ public class IndoStorSystem {
 
                             System.out.print("Masukan nama barang: ");
                             nm_produk = input.nextLine();
+                            System.out.print("Masukan tipe barang: ");
+                            tipe_produkString = input.nextLine();
                             System.out.print("Masukan harga barang: ");
                             hrg_produk = input.nextInt();
                             System.out.print("Masukan kuantitas barang: ");
                             jml_produk = input.nextInt();
 
                             String tmp = "";
-                            tmp =  Integer.toString(hrg_produk);
-                            String[] tmp1 ;
+                            tmp = Integer.toString(hrg_produk);
+                            String[] tmp1;
                             tmp1 = tmp.split("");
                             int tmp2 = 0;
-                            for (int i = 0; i <tmp1.length ; i++) {
+
+                            for (int i = 0; i < tmp1.length; i++) {
                                 tmp2 += Integer.parseInt(tmp1[i]);
                             }
 
+                            String nm_1111 = "";
+                            int jmlharga = 0;
                             //TODO ganti id_produk dengan id_produk yang sudah di modifikasi
 
                             for (int i = 0; i < str.getList_store().size(); i++) {
                                 if (str.getList_store().get(i).getNm_store().equals(cmd[2])) {
-                                    id_produk = recCheckId("HAHA6", str.getList_store().get(i).getList_produk().size()-1,i);
 
-                                    str.getList_store().get(i).setList_produk(new Goods(nm_produk, hrg_produk,id_produk,Tipe.NETRAL));
+
+                                    String nm_akhir = nm_produk.substring(nm_produk.length() - 1);
+                                    String nm_awal = nm_produk.substring(0, 1);
+                                    nm_1111 = nm_awal.toUpperCase() + nm_akhir.toUpperCase();
+
+                                    id_lama = String.valueOf(hrg_produk);
+                                    String[] tmp_id_lama = id_lama.split("");
+
+                                    for (int k = 0; k < tmp_id_lama.length; k++) {
+                                        jmlharga += Integer.parseInt(tmp_id_lama[k]);
+                                    }
+
+                                    if (tipe_produkString.equals("m")) {
+                                        tipe_produk = Tipe.MAKANAN;
+                                        tipe_id_prod = "FD";
+                                    } else if (tipe_produkString.equals("b")) {
+                                        tipe_produk = Tipe.BERACUN;
+                                        tipe_id_prod = "PD";
+                                    } else {
+                                        tipe_produk = Tipe.NETRAL;
+                                        tipe_id_prod = "NE";
+                                    }
+
+                                    String tmp_id = nm_1111 + tipe_id_prod + String.valueOf(jmlharga);
+
+                                    System.out.println("ID SEMENTARAH:: " + tmp_id);
+                                    id_produk = recCheckId(tmp_id, str.getList_store().get(i).getList_produk().size() - 1, i);
+
+                                    str.getList_store().get(i).setList_produk(new Goods(nm_produk, hrg_produk, id_produk, tipe_produk));
                                     System.out.println("Barang " + nm_produk + " berhasil ditambahkan pada " +
                                             str.getList_store().get(i).getNm_store());
                                     break;
                                 }
+
+
                             }
                             break;
                     }
@@ -200,7 +241,7 @@ public class IndoStorSystem {
                             for (int j = 0; j < str.getList_store().get(i).getList_produk().size(); j++) {
                                 System.out.println(". Nama: " + str.getList_store().get(i).getList_produk().get(j).getNama() +
                                         " Harga: " + str.getList_store().get(i).getList_produk().get(j).getHarga()
-                                        + " Id: "+ str.getList_store().get(i).getList_produk().get(j).getId());
+                                        + " Id: " + str.getList_store().get(i).getList_produk().get(j).getId());
                             }
                         }
 
@@ -233,13 +274,13 @@ public class IndoStorSystem {
 
         // TODO: 10/20/2019 cek duplikat
         for (int i = 0; i < tmpAngka.size(); i++) {
-            if (angkaID == tmpAngka.get(i)){
-                angkaID+=1;
+            if (angkaID == tmpAngka.get(i)) {
+                angkaID += 1;
             }
         }
 
         String nmdantp = id.substring(0, 4);
-        nmdantp+=angkaID;
+        nmdantp += angkaID;
 
         System.out.println("DATA BERUBAH!");
         return nmdantp;
@@ -258,7 +299,7 @@ public class IndoStorSystem {
                 System.out.println("INDEX " + index + " SAMA(sub0-4):  " + idlama.substring(0, 4));
                 return recFixId(idlama, idx_Store);
             } else {
-                return recCheckId(idlama, index - 1,idx_Store);
+                return recCheckId(idlama, index - 1, idx_Store);
             }
         }
     }
