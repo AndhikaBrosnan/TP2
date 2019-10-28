@@ -28,14 +28,6 @@ public class Store {
         this.list_produk.add(list_produk);
     }
 
-    public void updateListProduk(String name, int harga, int jml,int index){
-        for (int i=0;i<list_store.get(index).list_produk.size();i++){
-            if(name.equals(list_produk.get(i).getNama())){
-                list_produk.get(i).setHarga(harga);
-            }
-        }
-    }
-
     public ArrayList<Goods> getList_produk() {
         return list_produk;
     }

@@ -287,7 +287,6 @@ public class IndoStorSystem {
     }
 
     public static String recCheckId(String idlama, int index, int idx_Store) {
-        System.out.println("MASOK RECHECKID, index: " + index);
 
         if (index == -1) {
             return idlama;
