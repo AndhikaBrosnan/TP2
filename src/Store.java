@@ -4,7 +4,7 @@ public class Store {
     private String nm_store;
     private ArrayList<Goods> list_produk = new ArrayList<>();
     private ArrayList<Store> list_store = new ArrayList<>();
-    private ArrayList<Storage> list_storage = new ArrayList<>();
+    private ArrayList<Storage> list_storage = new ArrayList<>(3);
 
     //CONSTRUCTOR
     public Store() {
@@ -41,7 +41,6 @@ public class Store {
     }
 
     //STORAGE
-
     public void setList_storage(Storage list_storage) {
         this.list_storage.add(list_storage);
     }
