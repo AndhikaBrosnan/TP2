@@ -4,32 +4,23 @@ public class Store {
     private String nm_store;
     private ArrayList<Goods> list_produk = new ArrayList<>();
     private ArrayList<Store> list_store = new ArrayList<>();
+    private ArrayList<Storage> list_storage = new ArrayList<>();
 
-    public Store(){}
+    //CONSTRUCTOR
+    public Store() {
+    }
 
-    public Store(String nm_store){
+    public Store(String nm_store) {
         this.nm_store = nm_store;
     }
 
-    public Store(String nm_store, ArrayList<Goods> list_produk) {
-        this.nm_store = nm_store;
-        this.list_produk = list_produk;
-    }
-
+    //STORE
     public void setList_store(Store store) {
-        this.list_store.add(store) ;
+        this.list_store.add(store);
     }
 
     public void setNm_store(String nm_store) {
         this.nm_store = nm_store;
-    }
-
-    public void setList_produk(Goods list_produk) {
-        this.list_produk.add(list_produk);
-    }
-
-    public ArrayList<Goods> getList_produk() {
-        return list_produk;
     }
 
     public ArrayList<Store> getList_store() {
@@ -40,4 +31,22 @@ public class Store {
         return nm_store;
     }
 
+    //PRODUK
+    public void setList_produk(Goods list_produk) {
+        this.list_produk.add(list_produk);
+    }
+
+    public ArrayList<Goods> getList_produk() {
+        return list_produk;
+    }
+
+    //STORAGE
+
+    public void setList_storage(Storage list_storage) {
+        this.list_storage.add(list_storage);
+    }
+
+    public ArrayList<Storage> getList_storage() {
+        return list_storage;
+    }
 }

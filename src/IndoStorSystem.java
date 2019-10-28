@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 public class IndoStorSystem {
 
-    // TODO: 10/20/2019 MASUKIN KE ARRAY YANG ADA DI STORE ATUH ANJING
 //    public static ArrayList<Goods> arrGoods = new ArrayList<>();
 
     public static Store str = new Store();
@@ -295,7 +294,6 @@ public class IndoStorSystem {
             System.out.println("ID: " + str.getList_store().get(idx_Store).getList_produk().get(index).getId());
             System.out.println("idlama: " + idlama);
             if (idlama.substring(0, 4).equals(str.getList_store().get(idx_Store).getList_produk().get(index).getId().substring(0, 4))) {
-                System.out.println("INDEX " + index + " SAMA(sub0-4):  " + idlama.substring(0, 4));
                 return recFixId(idlama, idx_Store);
             } else {
                 return recCheckId(idlama, index - 1, idx_Store);
