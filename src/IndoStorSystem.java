@@ -208,28 +208,76 @@ public class IndoStorSystem {
                                     int tmp_a = 0;
                                     lupstge:
                                     for (int j = 0; j < lstStr.get(i).getList_storage().size(); j++) {
-                                        if (lstStr.get(i).getList_storage().get(j).getGoods() != null) {
+
+                                        //kalo udah di index terakhir tambahin storagenya 3
+                                        if (j == lstStr.get(i).getList_storage().size() - 1) {
+                                            lstStr.get(i).setList_storage(new Storage());
+                                            lstStr.get(i).setList_storage(new Storage());
+                                            lstStr.get(i).setList_storage(new Storage());
+                                        }
+
+                                        //pindah storage kalo udah penuh
+                                        System.out.println("====STORAGE KE BERAPA====: " + j);
+                                        if (lstStr.get(i).getList_storage().get(j).getGoods() != null
+                                                && lstStr.get(i).getList_storage().get(j).getGoods().size() < 3) {
+
+                                            Storage strge = lstStr.get(i).getList_storage().get(j); //ini penting dipake pas masukin barang ke strge
+
+                                            if (tipe_produk == Tipe.BERACUN) {
+                                                try {
+                                                    int sizey = lstStr.get(i).getList_storage().get(j).getGoods().size();
+                                                    if (lstStr.get(i).getList_storage().get(j).getGoods().get(sizey-1).getTipe() == Tipe.MAKANAN) {
+                                                        //if size 2 tambah storage,
+                                                        if (sizey > 1){
+                                                            System.out.println("Tidak bisa ditambahkan di storage ini, pindah storage ...");
+                                                            ++j;
+                                                        }else{
+                                                            //tambah goods "kosong"
+                                                            String cekIDKosong;
+                                                            cekIDKosong = recCheckId("KGNE1", strge.getGoods().size() - 1, i, j);
+                                                            strge.setGoods(new Goods("Kosong", 1, cekIDKosong, Tipe.NETRAL));
+                                                        }
+                                                    }
+                                                } catch (Exception e) {
+                                                    System.out.println("error barang beracun: " + e);
+                                                }
+                                            } else if (tipe_produk == Tipe.MAKANAN) {
+                                                try {
+                                                    int sizey = lstStr.get(i).getList_storage().get(j).getGoods().size();
+                                                    if (lstStr.get(i).getList_storage().get(j).getGoods().get(sizey-1).getTipe() == Tipe.BERACUN) {
+                                                        if (sizey>1){ //kalau
+                                                            System.out.println("Tidak bisa ditambahkan di storage ini, pindah storage ...");
+                                                            ++j;
+                                                        }else{
+                                                            //tambah goods "kosong"
+                                                            String cekIDKosong;
+                                                            cekIDKosong = recCheckId("KGNE1", strge.getGoods().size() - 1, i, j);
+                                                            strge.setGoods(new Goods("Kosong", 1, cekIDKosong, Tipe.NETRAL));
+                                                        }
+
+                                                    }
+                                                } catch (Exception e) {
+                                                    System.out.println("error barang makanan: " + e);
+                                                }
+
+                                            }
+
+                                            //kayaknya masukin else aja
+
                                             tmp_a = j; //ngedapetin index si storage
                                             System.out.println("ID SEMENTARAH:: " + tmp_id);
-                                            Storage strge = lstStr.get(i).getList_storage().get(j);
-                                            id_produk = recCheckId(tmp_id, strge.getGoods().size() - 1, i, j);
-                                            strge.setGoods(new Goods(nm_produk, hrg_produk, id_produk, tipe_produk));
+
+                                            try {
+                                                id_produk = recCheckId(tmp_id, strge.getGoods().size() - 1, i, j);
+                                                strge.setGoods(new Goods(nm_produk, hrg_produk, id_produk, tipe_produk));
+                                            }catch (Exception e){
+                                                System.out.println("DON'T WORRY we're using try catch");
+                                                Storage strgeKhusus = lstStr.get(i).getList_storage().get(j);
+                                                strgeKhusus.setGoods(new Goods(nm_produk, hrg_produk, id_produk, tipe_produk));
+                                            }
+
                                             break lupstge;
                                         }
-                                    }
-
-                                    int temp_d = lstStr.get(i).getList_storage().get(tmp_a).getGoods().size() - 1;
-                                    ArrayList<Goods> arrGoods = lstStr.get(i).getList_storage().get(tmp_a).getGoods();
-
-                                    while (temp_d != 1) {
-
-//                                        if (arrGoods.get(temp_d).getTipe().equals("PD")){
-//                                            if (arrGoods.get(temp_d+1).getTipe().equals("FD")||arrGoods.get(temp_d-1).getTipe().equals("FD")){
-//                                                // TODO: 10/28/2019 MANIPULASI TIPE BARANG
-//                                            }
-//                                        }
-
-                                        temp_d--;
                                     }
 
                                     System.out.println("Barang " + nm_produk + " berhasil ditambahkan pada " +
@@ -292,11 +340,13 @@ public class IndoStorSystem {
                     for (int i = 0; i < lstStr.size(); i++) {
                         if (lstStr.get(i).getNm_store().equals(cmd[2])) {
                             for (int j = 0; j < lstStr.get(i).getList_storage().size(); j++) {
+                                System.out.println("STORAGE NOMOR:" + j);
                                 Storage strge = lstStr.get(i).getList_storage().get(j);
                                 for (int k = 0; k < strge.getGoods().size(); k++) {
-                                    System.out.println(". Nama: " + strge.getGoods().get(k).getNama() +
-                                            " Harga: " + strge.getGoods().get(k).getHarga()
-                                            + " Id: " + strge.getGoods().get(k).getId());
+                                    System.out.println(". Nama: " + strge.getGoods().get(k).getNama()
+                                            +" Harga: " + strge.getGoods().get(k).getHarga()
+                                            +" Id: " + strge.getGoods().get(k).getId()
+                                            +" TIPE: "+strge.getGoods().get(k).getTipe());
                                 }
                             }
                         }
