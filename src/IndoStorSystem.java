@@ -8,10 +8,10 @@ public class IndoStorSystem {
 
     public static Store str = new Store();
     public static ArrayList<Store> lstStr = str.getList_store();
-    
+
     public static void main(String[] args) {
         System.out.println();
-        
+
         String perintah = "tampilkan";
         Goods prd = new Goods();
 
@@ -47,36 +47,35 @@ public class IndoStorSystem {
             cmd[0] = cmd[0].toLowerCase();
 
             switch (cmd[0]) {
-                case "update":
-
+                case "hapus":
                     int temp_4 = 0;
+                    String nama = cmd[1];
+
+                    boolean cekAda = false;
+                    int jmlHrgBarang = 0;
 
                     for (int i = 0; i < lstStr.size(); i++) {
-                        for (int j = 0; j < lstStr.get(i).getList_produk().size(); j++) {
-                            if (lstStr.get(i).getList_produk().get(j).getNama().equals(cmd[2])) {
-                                temp_4 = i;
-                                System.out.println("Form Update Data Barang di " + lstStr.get(i).getNm_store());
+                        if (lstStr.get(i).getNm_store().equals(nama)) {
+                            for (int j = 0; j < lstStr.get(i).getList_storage().size(); j++) {
+                                for (int k = 0; k < lstStr.get(i).getList_storage().get(j).getGoods().size(); k++) {
+                                    Goods gds = lstStr.get(i).getList_storage().get(j).getGoods().get(k);
+                                    jmlHrgBarang += gds.getHarga();
+                                }
                             }
+
+                            System.out.println("Berhasil menghapus dengan nama " + lstStr.get(i).getNm_store()
+                                    + " dengan total harga barang " + jmlHrgBarang);
+                            cekAda = true;
+                            lstStr.remove(i);
                         }
                     }
 
-                    System.out.print("Masukan nama barang: ");
-                    nm_produk = input.nextLine();
-                    System.out.print("Masukan tipe barang: ");
-                    tipe_produkString = input.nextLine();
-                    System.out.print("Masukan harga barang: ");
-                    hrg_produk = input.nextInt();
-                    System.out.print("Masukan kuantitas barang: ");
-                    jml_produk = input.nextInt();
-
-
-                    for (int j = 0; j < lstStr.get(temp_4).getList_produk().size(); j++) {
-                        if (lstStr.get(temp_4).getList_produk().get(j).getNama().equals(nm_produk)) {
-                            lstStr.get(temp_4).getList_produk().get(j).setHarga(hrg_produk);
-
-                            System.out.println("Data berhasil diubah!");
-                        }
+                    if (cekAda == false) {
+                        System.out.println("Tidak ada store dengan nama tersebut");
                     }
+
+                    jmlHrgBarang = 0;
+
                     break;
 
                 case "cari":
@@ -85,15 +84,18 @@ public class IndoStorSystem {
                     boolean kosong = true;
 
                     for (int i = 0; i < lstStr.size(); i++) {
-                        for (int j = 0; j < lstStr.get(i).getList_produk().size(); j++) {
-                            if (lstStr.get(i).getList_produk().get(j).getNama().equals(cmd[2])) {
-                                System.out.println("Store dengan " + cmd[2] + "berada di store: " + lstStr.get(i).getNm_store());
-                                //get the i and j
-                                temp_0 = i;
-                                kosong = false;
+                        for (int j = 0; j < lstStr.get(i).getList_storage().size(); j++) {
+                            Storage strge = lstStr.get(i).getList_storage().get(j);
+                            for (int k = 0; k < strge.getGoods().size(); k++) {
+                                if (strge.getGoods().get(k).getNama().equals(cmd[2])) {
+                                    System.out.println("Store dengan " + cmd[2] + "berada di store: " + lstStr.get(i).getNm_store());
+                                    //get the i and j
+                                    temp_0 = i;
+                                    kosong = false;
+                                }
                             }
                         }
-                        // TODO: 10/5/2019 Handling data kosong!
+                        //Handling data kosong!
 
                     }
 
@@ -101,12 +103,17 @@ public class IndoStorSystem {
                         System.out.println("Data tidak ditemukan");
                         continue;
                     } else {
-                        for (int j = 0; j < lstStr.get(temp_0).getList_produk().size(); j++) {
-                            System.out.println(". Nama: " + lstStr.get(temp_0).getList_produk().get(j).getNama()
-                                    + " Harga: " + lstStr.get(temp_0).getList_produk().get(j).getHarga()
-                                    + " Id: " + lstStr.get(temp_0).getList_produk().get(j).getId());
 
+                        for (int i = 0; i < lstStr.get(temp_0).getList_storage().size(); i++) {
+                            Storage strge = lstStr.get(temp_0).getList_storage().get(i);
+                            for (int j = 0; j < strge.getGoods().size(); j++) {
+                                System.out.println(". Nama: " + strge.getGoods().get(j).getNama()
+                                        + " Harga: " + strge.getGoods().get(j).getHarga()
+                                        + " Id: " + strge.getGoods().get(j).getId());
+
+                            }
                         }
+
                     }
 
                     kosong = false;
@@ -115,6 +122,7 @@ public class IndoStorSystem {
                     break;
 
                 case "tambah":
+
                     switch (cmd[1]) {
                         case "store":
                             System.out.print("Masukan nama Store: ");
@@ -130,6 +138,14 @@ public class IndoStorSystem {
 
                             if (!duplikat) {
                                 str.setList_store(new Store(nm_store));
+                                for (int i = 0; i < lstStr.size(); i++) {
+                                    if (lstStr.get(i).getNm_store().equals(nm_store)) {
+                                        // tambah 3 storage kosong
+                                        lstStr.get(i).setList_storage(new Storage());
+                                        lstStr.get(i).setList_storage(new Storage());
+                                        lstStr.get(i).setList_storage(new Storage());
+                                    }
+                                }
                                 System.out.println("Store bertambah!");
                             }
                             duplikat = false;
@@ -158,11 +174,10 @@ public class IndoStorSystem {
 
                             String nm_1111 = "";
                             int jmlharga = 0;
-                            //TODO ganti id_produk dengan id_produk yang sudah di modifikasi
+                            // ganti id_produk dengan id_produk yang sudah di modifikasi
 
                             for (int i = 0; i < lstStr.size(); i++) {
                                 if (lstStr.get(i).getNm_store().equals(cmd[2])) {
-
 
                                     String nm_akhir = nm_produk.substring(nm_produk.length() - 1);
                                     String nm_awal = nm_produk.substring(0, 1);
@@ -186,18 +201,41 @@ public class IndoStorSystem {
                                         tipe_id_prod = "NE";
                                     }
 
-                                    String tmp_id = nm_1111 + tipe_id_prod + String.valueOf(jmlharga);
+                                    //  10/28/2019 MASUKIN GOODS KE STORAGE YANG UDAH DI BIKIN!
+                                    //  10/28/2019 CEK kalo dia kosong, baru isi, kalo penuh baru jangan isi
+                                    String tmp_id = nm_1111 + tipe_id_prod + jmlharga;
 
-                                    System.out.println("ID SEMENTARAH:: " + tmp_id);
-                                    id_produk = recCheckId(tmp_id, lstStr.get(i).getList_produk().size() - 1, i);
+                                    int tmp_a = 0;
+                                    lupstge:
+                                    for (int j = 0; j < lstStr.get(i).getList_storage().size(); j++) {
+                                        if (lstStr.get(i).getList_storage().get(j).getGoods() != null) {
+                                            tmp_a = j; //ngedapetin index si storage
+                                            System.out.println("ID SEMENTARAH:: " + tmp_id);
+                                            Storage strge = lstStr.get(i).getList_storage().get(j);
+                                            id_produk = recCheckId(tmp_id, strge.getGoods().size() - 1, i, j);
+                                            strge.setGoods(new Goods(nm_produk, hrg_produk, id_produk, tipe_produk));
+                                            break lupstge;
+                                        }
+                                    }
 
-                                    lstStr.get(i).setList_produk(new Goods(nm_produk, hrg_produk, id_produk, tipe_produk));
+                                    int temp_d = lstStr.get(i).getList_storage().get(tmp_a).getGoods().size() - 1;
+                                    ArrayList<Goods> arrGoods = lstStr.get(i).getList_storage().get(tmp_a).getGoods();
+
+                                    while (temp_d != 1) {
+
+//                                        if (arrGoods.get(temp_d).getTipe().equals("PD")){
+//                                            if (arrGoods.get(temp_d+1).getTipe().equals("FD")||arrGoods.get(temp_d-1).getTipe().equals("FD")){
+//                                                // TODO: 10/28/2019 MANIPULASI TIPE BARANG
+//                                            }
+//                                        }
+
+                                        temp_d--;
+                                    }
+
                                     System.out.println("Barang " + nm_produk + " berhasil ditambahkan pada " +
                                             lstStr.get(i).getNm_store());
                                     break;
                                 }
-
-
                             }
                             break;
                     }
@@ -214,8 +252,25 @@ public class IndoStorSystem {
                     break;
 
                 case "tampilkan":
-                    System.out.println("Nama Goods: " + prd.getNama());
-                    System.out.println("Harga Goods: " + prd.getHarga());
+                    int jmlHargaTampil = 0;
+                    int fck = 0;
+                    if (lstStr.size() == 0) {
+                        System.out.println("[]");
+                    }
+
+                    for (int i = 0; i < lstStr.size(); i++) {
+
+                        for (int j = 0; j < lstStr.get(i).getList_storage().size(); j++) {
+                            for (int k = 0; k < lstStr.get(i).getList_storage().get(j).getGoods().size(); k++) {
+                                if (lstStr.get(i).getList_storage().get(j).getGoods().get(k).getHarga() != 0) {
+                                    // TODO: 10/28/2019 AMBIL Harganya, tampilkan!
+                                    jmlHargaTampil += lstStr.get(i).getList_storage().get(j).getGoods().get(k).getHarga();
+                                }
+                            }
+                        }
+                        System.out.println((++fck) + ". " + lstStr.get(i).getNm_store() + " jumlah harga: " + jmlHargaTampil);
+                        jmlHargaTampil = 0;
+                    }
                     break;
 
                 case "detail":
@@ -231,15 +286,18 @@ public class IndoStorSystem {
                         }
                     }
 
-                    // TODO: 10/5/2019 DON'T TOUCH BELOW THIS!!
+                    //===========================>>>>DANGEROUS<<<<===============================
                     System.out.println("          ====" + lstStr.get(temp1).getNm_store() + "====");
                     System.out.println("Barang yang dimiliki: ");
                     for (int i = 0; i < lstStr.size(); i++) {
                         if (lstStr.get(i).getNm_store().equals(cmd[2])) {
-                            for (int j = 0; j < lstStr.get(i).getList_produk().size(); j++) {
-                                System.out.println(". Nama: " + lstStr.get(i).getList_produk().get(j).getNama() +
-                                        " Harga: " + lstStr.get(i).getList_produk().get(j).getHarga()
-                                        + " Id: " + lstStr.get(i).getList_produk().get(j).getId());
+                            for (int j = 0; j < lstStr.get(i).getList_storage().size(); j++) {
+                                Storage strge = lstStr.get(i).getList_storage().get(j);
+                                for (int k = 0; k < strge.getGoods().size(); k++) {
+                                    System.out.println(". Nama: " + strge.getGoods().get(k).getNama() +
+                                            " Harga: " + strge.getGoods().get(k).getHarga()
+                                            + " Id: " + strge.getGoods().get(k).getId());
+                                }
                             }
                         }
 
@@ -259,18 +317,23 @@ public class IndoStorSystem {
 
     public static String recFixId(String id, int idx_store) {
 
-        // TODO: 10/20/2019 di sort dulu
+        // 10/20/2019 di sort dulu baru tambahin nomor ID
         ArrayList<Integer> tmpAngka = new ArrayList<>();
 
-        for (int i = 0; i < lstStr.get(idx_store).getList_produk().size(); i++) {
-            tmpAngka.add(Integer.parseInt(lstStr.get(idx_store).getList_produk().get(i).getId().substring(4)));
+
+        for (int i = 0; i < lstStr.get(idx_store).getList_storage().size(); i++) {
+            Storage strge = lstStr.get(idx_store).getList_storage().get(i);
+            for (int j = 0; j < strge.getGoods().size(); j++) {
+                tmpAngka.add(Integer.parseInt(strge.getGoods().get(j).getId().substring(4)));
+            }
+
         }
 
         Collections.sort(tmpAngka);
 
         int angkaID = Integer.parseInt(id.substring(4));
 
-        // TODO: 10/20/2019 cek duplikat
+        //  10/20/2019 cek duplikat
         for (int i = 0; i < tmpAngka.size(); i++) {
             if (angkaID == tmpAngka.get(i)) {
                 angkaID += 1;
@@ -284,18 +347,19 @@ public class IndoStorSystem {
         return nmdantp;
     }
 
-    public static String recCheckId(String idlama, int index, int idx_Store) {
+    public static String recCheckId(String idlama, int index, int idx_Store, int idx_Storage) {
 
         if (index == -1) {
             return idlama;
         } else {
-            // TODO: 10/20/2019 AMBIL VARIABLE DARI Goods yang ada di store
-            System.out.println("ID: " + lstStr.get(idx_Store).getList_produk().get(index).getId());
+            //  10/20/2019 AMBIL VARIABLE DARI Goods yang ada di store
+            Storage strge = lstStr.get(idx_Store).getList_storage().get(idx_Storage);
+            System.out.println("ID: " + strge.getGoods().get(index).getId());
             System.out.println("idlama: " + idlama);
-            if (idlama.substring(0, 4).equals(lstStr.get(idx_Store).getList_produk().get(index).getId().substring(0, 4))) {
+            if (idlama.substring(0, 4).equals(strge.getGoods().get(index).getId().substring(0, 4))) {
                 return recFixId(idlama, idx_Store);
             } else {
-                return recCheckId(idlama, index - 1, idx_Store);
+                return recCheckId(idlama, index - 1, idx_Store, idx_Storage);
             }
         }
     }

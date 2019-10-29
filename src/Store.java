@@ -32,13 +32,13 @@ public class Store {
     }
 
     //PRODUK
-    public void setList_produk(Goods list_produk) {
-        this.list_produk.add(list_produk);
-    }
-
-    public ArrayList<Goods> getList_produk() {
-        return list_produk;
-    }
+//    public void setList_produk(Goods list_produk) {
+//        this.list_produk.add(list_produk);
+//    }
+//
+//    public ArrayList<Goods> getList_produk() {
+//        return list_produk;
+//    }
 
     //STORAGE
     public void setList_storage(Storage list_storage) {

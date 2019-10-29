@@ -4,9 +4,14 @@ public class Storage {
     ArrayList<Goods> goods = new ArrayList<>();
     ArrayList<Storage> storages = new ArrayList<>();
 
+
+    public Storage() {
+    }
+
     public Storage(ArrayList<Goods> goods) {
         this.goods = goods;
     }
+
 
     public ArrayList<Storage> getStorages() {
         return storages;
