@@ -1,3 +1,5 @@
+import org.jetbrains.annotations.NotNull;
+
 import javax.print.DocFlavor;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -36,7 +38,6 @@ public class IndoStorSystem {
         System.out.println("=====SIMULASI PENYIMPANAN BARANG=====");
         System.out.print("tekan enter . . .");
 
-
         loop:
         do {
             input.nextLine();
@@ -73,8 +74,6 @@ public class IndoStorSystem {
                     if (cekAda == false) {
                         System.out.println("Tidak ada store dengan nama tersebut");
                     }
-
-                    jmlHrgBarang = 0;
 
                     break;
 
@@ -122,12 +121,19 @@ public class IndoStorSystem {
                     break;
 
                 case "tambah":
-
+                    // TODO: 11/6/2019 TAMBAH 
                     switch (cmd[1]) {
                         case "store":
                             System.out.print("Masukan nama Store: ");
                             nm_store = input.nextLine();
 
+
+                            if (nm_store.equals("") || nm_store.equals(" ")) {
+                                System.out.println("Input salah!");
+                                break;
+                            }
+
+                            // TODO: 11/6/2019 Cek STORE apabila namanya DUPLIKAT
                             for (int i = 0; i < lstStr.size(); i++) {
                                 if (lstStr.get(i).getNm_store().equals(nm_store)) {
                                     System.out.println("Store dengan nama tersebut sudah ada, harap ganti nama");
@@ -136,6 +142,7 @@ public class IndoStorSystem {
                                 }
                             }
 
+                            //jika duplikat
                             if (!duplikat) {
                                 str.setList_store(new Store(nm_store));
                                 for (int i = 0; i < lstStr.size(); i++) {
@@ -152,7 +159,7 @@ public class IndoStorSystem {
                             break;
 
                         case "barang":
-
+                            // TODO: 11/6/2019 tambah BARANG
                             System.out.print("Masukan nama barang: ");
                             nm_produk = input.nextLine();
                             System.out.print("Masukan tipe barang: ");
@@ -162,129 +169,9 @@ public class IndoStorSystem {
                             System.out.print("Masukan kuantitas barang: ");
                             jml_produk = input.nextInt();
 
-                            String tmp = "";
-                            tmp = Integer.toString(hrg_produk);
-                            String[] tmp1;
-                            tmp1 = tmp.split("");
-                            int tmp2 = 0;
+                            //di passing ke fungsi aja, soalnya panjang
+                            tambahBarang(nm_produk,tipe_produkString,hrg_produk, jml_produk, cmd[2]);
 
-                            for (int i = 0; i < tmp1.length; i++) {
-                                tmp2 += Integer.parseInt(tmp1[i]);
-                            }
-
-                            String nm_1111 = "";
-                            int jmlharga = 0;
-                            // ganti id_produk dengan id_produk yang sudah di modifikasi
-
-                            for (int i = 0; i < lstStr.size(); i++) {
-                                if (lstStr.get(i).getNm_store().equals(cmd[2])) {
-
-                                    String nm_akhir = nm_produk.substring(nm_produk.length() - 1);
-                                    String nm_awal = nm_produk.substring(0, 1);
-                                    nm_1111 = nm_awal.toUpperCase() + nm_akhir.toUpperCase();
-
-                                    id_lama = String.valueOf(hrg_produk);
-                                    String[] tmp_id_lama = id_lama.split("");
-
-                                    for (int k = 0; k < tmp_id_lama.length; k++) {
-                                        jmlharga += Integer.parseInt(tmp_id_lama[k]);
-                                    }
-
-                                    if (tipe_produkString.equals("m")) {
-                                        tipe_produk = Tipe.MAKANAN;
-                                        tipe_id_prod = "FD";
-                                    } else if (tipe_produkString.equals("b")) {
-                                        tipe_produk = Tipe.BERACUN;
-                                        tipe_id_prod = "PD";
-                                    } else {
-                                        tipe_produk = Tipe.NETRAL;
-                                        tipe_id_prod = "NE";
-                                    }
-
-                                    //  10/28/2019 MASUKIN GOODS KE STORAGE YANG UDAH DI BIKIN!
-                                    //  10/28/2019 CEK kalo dia kosong, baru isi, kalo penuh baru jangan isi
-                                    String tmp_id = nm_1111 + tipe_id_prod + jmlharga;
-
-                                    int tmp_a = 0;
-                                    lupstge:
-                                    for (int j = 0; j < lstStr.get(i).getList_storage().size(); j++) {
-
-                                        //kalo udah di index terakhir tambahin storagenya 3
-                                        if (j == lstStr.get(i).getList_storage().size() - 1) {
-                                            lstStr.get(i).setList_storage(new Storage());
-                                            lstStr.get(i).setList_storage(new Storage());
-                                            lstStr.get(i).setList_storage(new Storage());
-                                        }
-
-                                        //pindah storage kalo udah penuh
-                                        System.out.println("====STORAGE KE BERAPA====: " + j);
-                                        if (lstStr.get(i).getList_storage().get(j).getGoods() != null
-                                                && lstStr.get(i).getList_storage().get(j).getGoods().size() < 3) {
-
-                                            Storage strge = lstStr.get(i).getList_storage().get(j); //ini penting dipake pas masukin barang ke strge
-
-                                            if (tipe_produk == Tipe.BERACUN) {
-                                                try {
-                                                    int sizey = lstStr.get(i).getList_storage().get(j).getGoods().size();
-                                                    if (lstStr.get(i).getList_storage().get(j).getGoods().get(sizey-1).getTipe() == Tipe.MAKANAN) {
-                                                        //if size 2 tambah storage,
-                                                        if (sizey > 1){
-                                                            System.out.println("Tidak bisa ditambahkan di storage ini, pindah storage ...");
-                                                            ++j;
-                                                        }else{
-                                                            //tambah goods "kosong"
-                                                            String cekIDKosong;
-                                                            cekIDKosong = recCheckId("KGNE1", strge.getGoods().size() - 1, i, j);
-                                                            strge.setGoods(new Goods("Kosong", 1, cekIDKosong, Tipe.NETRAL));
-                                                        }
-                                                    }
-                                                } catch (Exception e) {
-                                                    System.out.println("error barang beracun: " + e);
-                                                }
-                                            } else if (tipe_produk == Tipe.MAKANAN) {
-                                                try {
-                                                    int sizey = lstStr.get(i).getList_storage().get(j).getGoods().size();
-                                                    if (lstStr.get(i).getList_storage().get(j).getGoods().get(sizey-1).getTipe() == Tipe.BERACUN) {
-                                                        if (sizey>1){ //kalau
-                                                            System.out.println("Tidak bisa ditambahkan di storage ini, pindah storage ...");
-                                                            ++j;
-                                                        }else{
-                                                            //tambah goods "kosong"
-                                                            String cekIDKosong;
-                                                            cekIDKosong = recCheckId("KGNE1", strge.getGoods().size() - 1, i, j);
-                                                            strge.setGoods(new Goods("Kosong", 1, cekIDKosong, Tipe.NETRAL));
-                                                        }
-
-                                                    }
-                                                } catch (Exception e) {
-                                                    System.out.println("error barang makanan: " + e);
-                                                }
-
-                                            }
-
-                                            //kayaknya masukin else aja
-
-                                            tmp_a = j; //ngedapetin index si storage
-                                            System.out.println("ID SEMENTARAH:: " + tmp_id);
-
-                                            try {
-                                                id_produk = recCheckId(tmp_id, strge.getGoods().size() - 1, i, j);
-                                                strge.setGoods(new Goods(nm_produk, hrg_produk, id_produk, tipe_produk));
-                                            }catch (Exception e){
-                                                System.out.println("DON'T WORRY we're using try catch");
-                                                Storage strgeKhusus = lstStr.get(i).getList_storage().get(j);
-                                                strgeKhusus.setGoods(new Goods(nm_produk, hrg_produk, id_produk, tipe_produk));
-                                            }
-
-                                            break lupstge;
-                                        }
-                                    }
-
-                                    System.out.println("Barang " + nm_produk + " berhasil ditambahkan pada " +
-                                            lstStr.get(i).getNm_store());
-                                    break;
-                                }
-                            }
                             break;
                     }
                     break;
@@ -311,7 +198,7 @@ public class IndoStorSystem {
                         for (int j = 0; j < lstStr.get(i).getList_storage().size(); j++) {
                             for (int k = 0; k < lstStr.get(i).getList_storage().get(j).getGoods().size(); k++) {
                                 if (lstStr.get(i).getList_storage().get(j).getGoods().get(k).getHarga() != 0) {
-                                    // TODO: 10/28/2019 AMBIL Harganya, tampilkan!
+
                                     jmlHargaTampil += lstStr.get(i).getList_storage().get(j).getGoods().get(k).getHarga();
                                 }
                             }
@@ -344,9 +231,9 @@ public class IndoStorSystem {
                                 Storage strge = lstStr.get(i).getList_storage().get(j);
                                 for (int k = 0; k < strge.getGoods().size(); k++) {
                                     System.out.println(". Nama: " + strge.getGoods().get(k).getNama()
-                                            +" Harga: " + strge.getGoods().get(k).getHarga()
-                                            +" Id: " + strge.getGoods().get(k).getId()
-                                            +" TIPE: "+strge.getGoods().get(k).getTipe());
+                                            + " Harga: " + strge.getGoods().get(k).getHarga()
+                                            + " Id: " + strge.getGoods().get(k).getId()
+                                            + " TIPE: " + strge.getGoods().get(k).getTipe());
                                 }
                             }
                         }
@@ -365,12 +252,13 @@ public class IndoStorSystem {
         } while (true);
     }
 
+    @NotNull
     public static String recFixId(String id, int idx_store) {
 
         // 10/20/2019 di sort dulu baru tambahin nomor ID
         ArrayList<Integer> tmpAngka = new ArrayList<>();
 
-
+        // TODO: 11/6/2019 'RECURSIVE BIKIN ID'Ambil semua index goods.terus diurutin
         for (int i = 0; i < lstStr.get(idx_store).getList_storage().size(); i++) {
             Storage strge = lstStr.get(idx_store).getList_storage().get(i);
             for (int j = 0; j < strge.getGoods().size(); j++) {
@@ -379,6 +267,7 @@ public class IndoStorSystem {
 
         }
 
+        //todo 'RECFIXID' dari angka angka yang ada dalam goods, di sort dulu
         Collections.sort(tmpAngka);
 
         int angkaID = Integer.parseInt(id.substring(4));
@@ -397,8 +286,9 @@ public class IndoStorSystem {
         return nmdantp;
     }
 
-    public static String recCheckId(String idlama, int index, int idx_Store, int idx_Storage) {
 
+    public static String recCheckId(String idlama, int index, int idx_Store, int idx_Storage) {
+        // TODO: 11/6/2019 Yang dipanggil id kalo di method main diatas. 
         if (index == -1) {
             return idlama;
         } else {
@@ -407,10 +297,158 @@ public class IndoStorSystem {
             System.out.println("ID: " + strge.getGoods().get(index).getId());
             System.out.println("idlama: " + idlama);
             if (idlama.substring(0, 4).equals(strge.getGoods().get(index).getId().substring(0, 4))) {
+                // TODO: 11/6/2019 KALO UDAH DAPET YANG SAMA, TAMBAHIN DENGAN METHOD recFixId() 
                 return recFixId(idlama, idx_Store);
             } else {
+                // TODO: 11/6/2019 Kalo ga sama dengan yang diatas, iterasi lagi
                 return recCheckId(idlama, index - 1, idx_Store, idx_Storage);
             }
         }
     }
+
+    public static void cekBarang(String nmBarang){
+
+    }
+
+    public static void tambahBarang(String nmBarang, String tipeBarang, int hrgBarang, int qtyBarang, String command){
+
+        Tipe tipe_produk = null;
+        String tipe_id_prod = "";
+        String id_produk = "";
+        String nm_produk = nmBarang;
+        String tipe_produkString = tipeBarang;
+        int hrg_produk = hrgBarang;
+        int jml_barang = qtyBarang;
+        String id_lama = "";
+        String tipePd;
+
+        // TODO: 11/6/2019 'BUAT ID' ambil harga
+        String tmp = "";
+        tmp = Integer.toString(hrg_produk);
+        String[] tmp1;
+        tmp1 = tmp.split("");
+        int tmp2 = 0;
+
+        // TODO: 11/6/2019 buat tambahin setiap karakter dari harga
+        for (int i = 0; i < tmp1.length; i++) {
+            tmp2 += Integer.parseInt(tmp1[i]);
+        }
+
+        String nm_1111 = "";
+        int jmlharga = 0;
+        // ganti id_produk dengan id_produk yang sudah di modifikasi
+
+        // TODO: 11/6/2019 'Buat ID'Ambil karakter pertama dan terakhir ditambah dengan Tipe
+        for (int i = 0; i < lstStr.size(); i++) {
+            if (lstStr.get(i).getNm_store().equals(command)) {
+
+                String nm_akhir = nm_produk.substring(nm_produk.length() - 1);
+                String nm_awal = nm_produk.substring(0, 1);
+                nm_1111 = nm_awal.toUpperCase() + nm_akhir.toUpperCase();
+
+                id_lama = String.valueOf(hrg_produk);
+                String[] tmp_id_lama = id_lama.split("");
+
+                for (int k = 0; k < tmp_id_lama.length; k++) {
+                    jmlharga += Integer.parseInt(tmp_id_lama[k]);
+                }
+
+                if (tipe_produkString.equals("m")) {
+                    tipe_produk = Tipe.MAKANAN;
+                    tipe_id_prod = "FD";
+                } else if (tipe_produkString.equals("b")) {
+                    tipe_produk = Tipe.BERACUN;
+                    tipe_id_prod = "PD";
+                } else {
+                    tipe_produk = Tipe.NETRAL;
+                    tipe_id_prod = "NE";
+                }
+
+                //  10/28/2019 MASUKIN GOODS KE STORAGE YANG UDAH DI BIKIN!
+                //  10/28/2019 CEK kalo dia kosong, baru isi, kalo penuh baru jangan isi
+                String tmp_id = nm_1111 + tipe_id_prod + jmlharga;
+
+                int tmp_a = 0;
+
+                lupstge:
+                for (int j = 0; j < lstStr.get(i).getList_storage().size(); j++) {
+
+                    //TODO kalo udah di index terakhir tambahin storagenya 3
+                    if (j == lstStr.get(i).getList_storage().size() - 1) {
+                        lstStr.get(i).setList_storage(new Storage());
+                        lstStr.get(i).setList_storage(new Storage());
+                        lstStr.get(i).setList_storage(new Storage());
+                    }
+
+
+                    //TODO pindah storage kalo udah penuh
+                    System.out.println("====MENAMBAHKAN DI STORAGE KE: ====: " + j);
+                    if (lstStr.get(i).getList_storage().get(j).getGoods() != null
+                            && lstStr.get(i).getList_storage().get(j).getGoods().size() < 3) {
+
+                        Storage strge = lstStr.get(i).getList_storage().get(j); //ini penting dipake pas masukin barang ke strge
+
+                        if (tipe_produk == Tipe.BERACUN) {
+                            // TODO: 11/6/2019 kalau storageya disamping kiri makanan padahal tipenya beracun
+                            //pake try karena kalo index ke 0 ga punya samping kiri
+                            try {
+                                int sizey = lstStr.get(i).getList_storage().get(j).getGoods().size();
+                                if (lstStr.get(i).getList_storage().get(j).getGoods().get(sizey - 1).getTipe() == Tipe.MAKANAN) {
+                                    //if size 2 tambah storage,
+                                    if (sizey > 1) {
+                                        System.out.println("Tidak bisa ditambahkan di storage ini, pindah storage ...");
+                                        ++j;
+                                    } else {
+                                        //TODO tambah goods "kosong"
+                                        String cekIDKosong;
+                                        cekIDKosong = recCheckId("KGNE1", strge.getGoods().size() - 1, i, j);
+                                        strge.setGoods(new Goods("Kosong", 1, cekIDKosong, Tipe.NETRAL));
+                                    }
+                                }
+                            } catch (Exception e) {
+//                                                    System.out.println("error barang beracun: " + e);
+                            }
+                        } else if (tipe_produk == Tipe.MAKANAN) {
+                            // TODO: 11/6/2019 cek goods di samping kirinya
+                            try {
+                                int sizey = lstStr.get(i).getList_storage().get(j).getGoods().size();
+                                if (lstStr.get(i).getList_storage().get(j).getGoods().get(sizey - 1).getTipe() == Tipe.BERACUN) {
+                                    if (sizey > 1) { //kalau
+                                        System.out.println("Tidak bisa ditambahkan di storage ini, pindah storage ...");
+                                        ++j;
+                                    } else {
+                                        //tambah goods "kosong"
+                                        String cekIDKosong;
+                                        cekIDKosong = recCheckId("KGNE1", strge.getGoods().size() - 1, i, j);
+                                        strge.setGoods(new Goods("Kosong", 1, cekIDKosong, Tipe.NETRAL));
+                                    }
+
+                                }
+                            } catch (Exception e) {
+
+                            }
+                        }
+
+                        tmp_a = j; //ngedapetin index si storage
+
+                        try {
+                            id_produk = recCheckId(tmp_id, strge.getGoods().size() - 1, i, j);
+                            strge.setGoods(new Goods(nm_produk, hrg_produk, id_produk, tipe_produk));
+                        } catch (Exception e) {
+                            System.out.println("DON'T WORRY we're using try catch");
+                            Storage strgeKhusus = lstStr.get(i).getList_storage().get(j);
+                            strgeKhusus.setGoods(new Goods(nm_produk, hrg_produk, id_produk, tipe_produk));
+                        }
+
+                        break lupstge;
+                    }
+                }
+
+                System.out.println("Barang " + nm_produk + " berhasil ditambahkan pada " +
+                        lstStr.get(i).getNm_store());
+                break;
+            }
+        }
+    }
+
 }
