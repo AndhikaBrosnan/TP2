@@ -1,10 +1,17 @@
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import javax.print.DocFlavor;
-import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
+
+import java.io.FileWriter;
+import java.io.IOException;
+
 
 public class IndoStorSystem {
 
@@ -12,7 +19,33 @@ public class IndoStorSystem {
     public static ArrayList<Store> lstStr = str.getList_store();
 
     public static void main(String[] args) {
+
+        String jsonString = "/E:/UI/Kuliah/Sem 3/DDP2/TP2/src/data.json";
+
+        //how to read data from JSON
+        try (FileWriter file = new FileWriter("/E:/UI/Kuliah/Sem 3/DDP2/TP2/src/data.json")) {
+            JSONObject goodsDetail = new JSONObject();
+            goodsDetail.put("nama", "Brosnan");
+            goodsDetail.put("detail", "BNFD57");
+            goodsDetail.put("harga", 111111);
+
+            JSONObject storage = new JSONObject();
+            storage.put("storage1", goodsDetail);
+
+            file.write(storage.toString());
+            file.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         System.out.println();
+
+        //Goods Inheritance & Polymorphism
+        GoodsFactory idsgtsu = new IndoSangatsuGoodsFactory();
+        ConsumableGoods consumableGoods = idsgtsu.createConsumablesGoods();
+        Foods food = idsgtsu.createFoods();
+        PoisonousGoods poisonousGoods = idsgtsu.createPoisonousGoods();
+//        Goods neutralGoods = idsgtsu.createNeutralGoods();
 
         String perintah = "tampilkan";
         Goods prd = new Goods();
@@ -95,14 +128,12 @@ public class IndoStorSystem {
                             }
                         }
                         //Handling data kosong!
-
                     }
 
                     if (kosong == true) {
                         System.out.println("Data tidak ditemukan");
                         continue;
                     } else {
-
                         for (int i = 0; i < lstStr.get(temp_0).getList_storage().size(); i++) {
                             Storage strge = lstStr.get(temp_0).getList_storage().get(i);
                             for (int j = 0; j < strge.getGoods().size(); j++) {
@@ -170,7 +201,7 @@ public class IndoStorSystem {
                             jml_produk = input.nextInt();
 
                             //di passing ke fungsi aja, soalnya panjang
-                            tambahBarang(nm_produk,tipe_produkString,hrg_produk, jml_produk, cmd[2]);
+                            tambahBarang(nm_produk, tipe_produkString, hrg_produk, jml_produk, cmd[2]);
 
                             break;
                     }
@@ -306,11 +337,13 @@ public class IndoStorSystem {
         }
     }
 
-    public static void cekBarang(String nmBarang){
+    public static void tambahBarang(String nmBarang, String tipeBarang, int hrgBarang, int qtyBarang, String command) {
 
-    }
-
-    public static void tambahBarang(String nmBarang, String tipeBarang, int hrgBarang, int qtyBarang, String command){
+        GoodsFactory idsgtsu = new IndoSangatsuGoodsFactory();
+        ConsumableGoods consumableGoods = idsgtsu.createConsumablesGoods();
+        Foods food = idsgtsu.createFoods();
+        PoisonousGoods poisonousGoods = idsgtsu.createPoisonousGoods();
+//        Goods neutralGoods = idsgtsu.createNeutralGoods();
 
         Tipe tipe_produk = null;
         String tipe_id_prod = "";
@@ -402,7 +435,7 @@ public class IndoStorSystem {
                                         //TODO tambah goods "kosong"
                                         String cekIDKosong;
                                         cekIDKosong = recCheckId("KGNE1", strge.getGoods().size() - 1, i, j);
-                                        strge.setGoods(new Goods("Kosong", 1, cekIDKosong, Tipe.NETRAL));
+                                        strge.setGoods(idsgtsu.createNeutralGoods("Kosong", 1, cekIDKosong, Tipe.NETRAL));
                                     }
                                 }
                             } catch (Exception e) {
@@ -420,7 +453,7 @@ public class IndoStorSystem {
                                         //tambah goods "kosong"
                                         String cekIDKosong;
                                         cekIDKosong = recCheckId("KGNE1", strge.getGoods().size() - 1, i, j);
-                                        strge.setGoods(new Goods("Kosong", 1, cekIDKosong, Tipe.NETRAL));
+                                        strge.setGoods(idsgtsu.createNeutralGoods("Kosong", 1, cekIDKosong, Tipe.NETRAL));
                                     }
 
                                 }
@@ -433,11 +466,11 @@ public class IndoStorSystem {
 
                         try {
                             id_produk = recCheckId(tmp_id, strge.getGoods().size() - 1, i, j);
-                            strge.setGoods(new Goods(nm_produk, hrg_produk, id_produk, tipe_produk));
+                            strge.setGoods(idsgtsu.createNeutralGoods(nm_produk, hrg_produk, id_produk, tipe_produk));
                         } catch (Exception e) {
                             System.out.println("DON'T WORRY we're using try catch");
                             Storage strgeKhusus = lstStr.get(i).getList_storage().get(j);
-                            strgeKhusus.setGoods(new Goods(nm_produk, hrg_produk, id_produk, tipe_produk));
+                            strgeKhusus.setGoods(idsgtsu.createNeutralGoods(nm_produk, hrg_produk, id_produk, tipe_produk));
                         }
 
                         break lupstge;
