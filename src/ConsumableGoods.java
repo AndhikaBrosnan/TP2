@@ -42,17 +42,21 @@ public class ConsumableGoods extends Goods {
             System.out.println("Barang udah kadaluarsa: " + e);
         }
 
-        if (jumlahExpiredDate < 7) {
+        if (jumlahExpiredDate>0 && jumlahExpiredDate < 7) {
             diskonConsum = (0.9);
             setDiskonConsum(0.9);
             return diskonConsum;
-        } else if (jumlahExpiredDate < 120) {
+        } else if (jumlahExpiredDate>0 && jumlahExpiredDate < 120) {
             diskonConsum = (0.4);
             setDiskonConsum(0.4);
             return diskonConsum;
-        } else {
+        }else if(jumlahExpiredDate >= 120){
             setDiskonConsum(0.1);
             diskonConsum = (0.1);
+            return diskonConsum;
+        }else {
+            setDiskonConsum(0.0);
+            diskonConsum = (0.0);
             return diskonConsum;
         }
     }

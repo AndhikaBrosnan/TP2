@@ -1,16 +1,16 @@
-import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import javax.management.OperationsException;
+import javax.naming.OperationNotSupportedException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.DuplicateFormatFlagsException;
 import java.util.Scanner;
 
 import java.io.FileWriter;
-import java.io.IOException;
 
 
 public class IndoStorSystem {
@@ -18,7 +18,7 @@ public class IndoStorSystem {
     public static Store str = new Store();
     public static ArrayList<Store> lstStr = str.getList_store();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws OperationNotSupportedException {
 
         String jsonString = "/E:/UI/Kuliah/Sem 3/DDP2/TP2/src/data.json";
 
@@ -190,6 +190,29 @@ public class IndoStorSystem {
                             break;
 
                         case "barang":
+                            //CEK NAMA BARANG UDAH BENER GA SIH . . .
+                            cmd[2] = cmd[2].toLowerCase();
+                            try {
+                                if (cmd.length < 3) {
+                                    System.out.println("Nama store tidak dimasukan");
+                                    throw new ArrayIndexOutOfBoundsException();
+                                }
+
+                                //cek ada atau engga
+                                boolean adaengga = false;
+                                for (int i = 0; i < str.getList_store().size(); i++) {
+                                    if (cmd[2].equals(str.getList_store().get(i).getNm_store())) {
+                                        adaengga = true;
+                                    }
+                                }
+                                if (adaengga == false) {
+                                    System.out.println("Nama barang tidak ada didatabase");
+                                    throw new OperationNotSupportedException();
+                                }
+                            } catch (Exception e) {
+                                continue;
+                            }
+
                             // TODO: 11/6/2019 tambah BARANG
                             System.out.print("Masukan nama barang: ");
                             nm_produk = input.nextLine();
@@ -344,6 +367,7 @@ public class IndoStorSystem {
         Foods food = idsgtsu.createFoods();
         PoisonousGoods poisonousGoods = idsgtsu.createPoisonousGoods();
 //        Goods neutralGoods = idsgtsu.createNeutralGoods();
+        Scanner input = new Scanner(System.in);
 
         Tipe tipe_produk = null;
         String tipe_id_prod = "";
@@ -413,7 +437,6 @@ public class IndoStorSystem {
                         lstStr.get(i).setList_storage(new Storage());
                     }
 
-
                     //TODO pindah storage kalo udah penuh
                     System.out.println("====MENAMBAHKAN DI STORAGE KE: ====: " + j);
                     if (lstStr.get(i).getList_storage().get(j).getGoods() != null
@@ -424,9 +447,20 @@ public class IndoStorSystem {
                         if (tipe_produk == Tipe.BERACUN) {
                             // TODO: 11/6/2019 kalau storageya disamping kiri makanan padahal tipenya beracun
                             //pake try karena kalo index ke 0 ga punya samping kiri
+
+                            System.out.print("Index Racun: ");
+                            int indexRacun = input.nextInt();
+                            double diskonMakanan = idsgtsu.createPoisonousGoods().calculatePoisinousGood(indexRacun);
+
+                            //ganti harga barang jadi udah ke diskon!
+                            hrg_produk = hrgBarang - (int)(hrgBarang*diskonMakanan);
+
+                            // TODO: 11/21/2019 HITUNG DISKON BARANG BERACUN
                             try {
                                 int sizey = lstStr.get(i).getList_storage().get(j).getGoods().size();
                                 if (lstStr.get(i).getList_storage().get(j).getGoods().get(sizey - 1).getTipe() == Tipe.MAKANAN) {
+//                                    consumableGoods.calculateDate()
+
                                     //if size 2 tambah storage,
                                     if (sizey > 1) {
                                         System.out.println("Tidak bisa ditambahkan di storage ini, pindah storage ...");
@@ -442,11 +476,34 @@ public class IndoStorSystem {
 //                                                    System.out.println("error barang beracun: " + e);
                             }
                         } else if (tipe_produk == Tipe.MAKANAN) {
-                            // TODO: 11/6/2019 cek goods di samping kirinya
+
+                            int tanggal = 0;
+                            int bulan = 0;
+                            int tahun = 0;
+                            //todo menghitung selisih hari
+                            System.out.print("Masukan tanggal: ");
+                            tanggal = input.nextInt();
+                            System.out.print("Masukan bulan: ");
+                            bulan = input.nextInt();
+                            System.out.print("Masukan tahun: ");
+                            tahun = input.nextInt();
+
+                            LocalDate expDeto = LocalDate.of(tahun, bulan, tanggal);
+                            LocalDate nowDate = LocalDate.now();
+
+                            int diffHari = (int) ChronoUnit.DAYS.between(nowDate, expDeto);
+                            double diskonMakanan = idsgtsu.createConsumablesGoods().calculateDate(diffHari);
+
+                            //ganti harga barang jadi udah ke diskon!
+                            hrg_produk = hrgBarang - (int)(hrgBarang*diskonMakanan);
+
+                            // TODO: 11/21/2019 HITUNG DISKONNYA CONSUMABLE GOODS
+
+                            //  11/6/2019 cek goods di samping kirinya
                             try {
                                 int sizey = lstStr.get(i).getList_storage().get(j).getGoods().size();
                                 if (lstStr.get(i).getList_storage().get(j).getGoods().get(sizey - 1).getTipe() == Tipe.BERACUN) {
-                                    if (sizey > 1) { //kalau
+                                    if (sizey > 1) {
                                         System.out.println("Tidak bisa ditambahkan di storage ini, pindah storage ...");
                                         ++j;
                                     } else {
