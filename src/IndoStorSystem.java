@@ -13,30 +13,13 @@ import java.util.Scanner;
 import java.io.FileWriter;
 
 
-public class IndoStorSystem {
+public class IndoStorSystem extends DatabaseModelObject {
+
 
     public static Store str = new Store();
     public static ArrayList<Store> lstStr = str.getList_store();
 
     public static void main(String[] args) throws OperationNotSupportedException {
-
-        String jsonString = "/E:/UI/Kuliah/Sem 3/DDP2/TP2/src/data.json";
-
-        //how to read data from JSON
-        try (FileWriter file = new FileWriter("/E:/UI/Kuliah/Sem 3/DDP2/TP2/src/data.json")) {
-            JSONObject goodsDetail = new JSONObject();
-            goodsDetail.put("nama", "Brosnan");
-            goodsDetail.put("detail", "BNFD57");
-            goodsDetail.put("harga", 111111);
-
-            JSONObject storage = new JSONObject();
-            storage.put("storage1", goodsDetail);
-
-            file.write(storage.toString());
-            file.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         System.out.println();
 
@@ -348,8 +331,6 @@ public class IndoStorSystem {
         } else {
             //  10/20/2019 AMBIL VARIABLE DARI Goods yang ada di store
             Storage strge = lstStr.get(idx_Store).getList_storage().get(idx_Storage);
-            System.out.println("ID: " + strge.getGoods().get(index).getId());
-            System.out.println("idlama: " + idlama);
             if (idlama.substring(0, 4).equals(strge.getGoods().get(index).getId().substring(0, 4))) {
                 // TODO: 11/6/2019 KALO UDAH DAPET YANG SAMA, TAMBAHIN DENGAN METHOD recFixId() 
                 return recFixId(idlama, idx_Store);
@@ -359,6 +340,39 @@ public class IndoStorSystem {
             }
         }
     }
+
+
+    public static Goods defineAttributeToWrite(String nmGoods, int hrgGoods, String idGoods, Tipe tipeGoods, String nmStore, int numStrge) {
+
+        JSONObject goodsDetail = new JSONObject();
+
+        System.out.println("Memasukan data ke database . . .");
+        int i = 0;
+
+        try (FileWriter file = new FileWriter("/E:/UI/Kuliah/Sem 3/DDP2/TP3/src/data.json")) {
+
+            goodsDetail.put("nm_goods", nmGoods);
+            goodsDetail.put("hrg_goods", hrgGoods);
+            goodsDetail.put("id_goods", idGoods);
+            goodsDetail.put("tipe_goods", tipeGoods.toString());
+
+            JSONObject storage = new JSONObject();
+            storage.put("storage" + (numStrge), goodsDetail);
+
+            JSONObject store = new JSONObject();
+            store.put(nmStore, storage);
+
+            file.write(store.toString());
+            file.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+//    public void defineAttributeToWrite(String nmGoods, int hrgGoods, String idGoods, Tipe tipeGoods, String nmStore, int numStrge) {
+//    }
 
     public static void tambahBarang(String nmBarang, String tipeBarang, int hrgBarang, int qtyBarang, String command) {
 
@@ -453,7 +467,7 @@ public class IndoStorSystem {
                             double diskonMakanan = idsgtsu.createPoisonousGoods().calculatePoisinousGood(indexRacun);
 
                             //ganti harga barang jadi udah ke diskon!
-                            hrg_produk = hrgBarang - (int)(hrgBarang*diskonMakanan);
+                            hrg_produk = hrgBarang - (int) (hrgBarang * diskonMakanan);
 
                             // TODO: 11/21/2019 HITUNG DISKON BARANG BERACUN
                             try {
@@ -495,7 +509,7 @@ public class IndoStorSystem {
                             double diskonMakanan = idsgtsu.createConsumablesGoods().calculateDate(diffHari);
 
                             //ganti harga barang jadi udah ke diskon!
-                            hrg_produk = hrgBarang - (int)(hrgBarang*diskonMakanan);
+                            hrg_produk = hrgBarang - (int) (hrgBarang * diskonMakanan);
 
                             // TODO: 11/21/2019 HITUNG DISKONNYA CONSUMABLE GOODS
 
@@ -510,6 +524,11 @@ public class IndoStorSystem {
                                         //tambah goods "kosong"
                                         String cekIDKosong;
                                         cekIDKosong = recCheckId("KGNE1", strge.getGoods().size() - 1, i, j);
+                                        // TODO: 11/21/2019 MASUKAN KE DATABASE
+
+                                        Goods gds;
+                                        gds = defineAttributeToWrite("Kosong", 1, cekIDKosong, Tipe.NETRAL, command, j);
+
                                         strge.setGoods(idsgtsu.createNeutralGoods("Kosong", 1, cekIDKosong, Tipe.NETRAL));
                                     }
 
@@ -523,10 +542,16 @@ public class IndoStorSystem {
 
                         try {
                             id_produk = recCheckId(tmp_id, strge.getGoods().size() - 1, i, j);
+
+                            Goods gds;
+                            gds = defineAttributeToWrite(nm_produk, hrg_produk, id_produk, tipe_produk, command, j);
+
                             strge.setGoods(idsgtsu.createNeutralGoods(nm_produk, hrg_produk, id_produk, tipe_produk));
                         } catch (Exception e) {
-                            System.out.println("DON'T WORRY we're using try catch");
                             Storage strgeKhusus = lstStr.get(i).getList_storage().get(j);
+
+                            Goods gds;
+                            gds = defineAttributeToWrite(nm_produk, hrg_produk, id_produk, tipe_produk, command, j);
                             strgeKhusus.setGoods(idsgtsu.createNeutralGoods(nm_produk, hrg_produk, id_produk, tipe_produk));
                         }
 

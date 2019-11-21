@@ -34,12 +34,11 @@ public class ConsumableGoods extends Goods {
 
         try {
             if (jumlahExpiredDate <= 0) {
-                System.out.println("Produk belum kadaluarsa!");
+                System.out.println("Produk sudah kadaluarsa!");
             } else {
                 throw new IllegalArgumentException();
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("Barang udah kadaluarsa: " + e);
         }
 
         if (jumlahExpiredDate>0 && jumlahExpiredDate < 7) {
