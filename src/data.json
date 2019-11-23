@@ -1,42 +1,45 @@
-[
-  {
-    "storage0": {
-      "nm_goods": "brosnanjing",
-      "hrg_goods": 2079169,
-      "id_goods": "EFFD29",
-      "tipe_goods": "MAKANAN"
+[{
+  "brosnan": [
+    {
+      "storage0": {
+        "nm_goods": "brosnanjing",
+        "hrg_goods": 2079169,
+        "id_goods": "EFFD29",
+        "tipe_goods": "MAKANAN"
+      }
+    },
+    {
+      "storage0": {
+        "nm_goods": "rizanjing",
+        "hrg_goods": 303614362,
+        "id_goods": "UGPD49",
+        "tipe_goods": "BERACUN"
+      }
+    },
+    {
+      "storage0": {
+        "nm_goods": "arianjing",
+        "hrg_goods": 582752,
+        "id_goods": "AGPD49",
+        "tipe_goods": "BERACUN"
+      }
+    },
+    {
+      "storage0": {
+        "nm_goods": "jeremianjing",
+        "hrg_goods": 303614362,
+        "id_goods": "JGPD49",
+        "tipe_goods": "BERACUN"
+      }
+    },
+    {
+      "storage0": {
+        "nm_goods": "HALOBROSNANKAMUBERHASILHAHAHA",
+        "hrg_goods": 23253714,
+        "id_goods": "HAFD47",
+        "tipe_goods": "MAKANAN"
+      }
     }
-  },
-  {
-    "storage0": {
-      "nm_goods": "rizanjing",
-      "hrg_goods": 303614362,
-      "id_goods": "UGPD49",
-      "tipe_goods": "BERACUN"
-    }
-  },
-  {
-    "storage0": {
-      "nm_goods": "arianjing",
-      "hrg_goods": 582752,
-      "id_goods": "AGPD49",
-      "tipe_goods": "BERACUN"
-    }
-  },
-  {
-    "storage0": {
-      "nm_goods": "jeremianjing",
-      "hrg_goods": 303614362,
-      "id_goods": "JGPD49",
-      "tipe_goods": "BERACUN"
-    }
-  },
-  {
-    "storage0": {
-      "nm_goods": "HALOBROSNANKAMUBERHASILHAHAHA",
-      "hrg_goods": 23253714,
-      "id_goods": "HAFD47",
-      "tipe_goods": "MAKANAN"
-    }
-  }
+  ]
+}
 ]
