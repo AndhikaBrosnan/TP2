@@ -17,37 +17,39 @@ public class IndoStorSystem extends DatabaseModelObject {
     private static ArrayList<Store> lstStr = str.getList_store();
 
     private static int iterateObj = 0;
+
     private static void parseStoreObject(org.json.simple.JSONObject store) {
 
         //Get employee object within list
         try {
 
-            System.out.println("=-=-=-=-=-BARANG "+(++iterateObj)+"=-=-=-=-=-");
+            System.out.println("=-=-=-=-=-BARANG " + (++iterateObj) + "=-=-=-=-=-");
 
             org.json.simple.JSONObject storageObject = (org.json.simple.JSONObject) store.get("storage0");
 
             //Get nama goods
             String nm_goods = (String) storageObject.get("nm_goods");
-            System.out.println("NAMA GOODS: "+nm_goods);
+            System.out.println("NAMA GOODS: " + nm_goods);
 
             //Get tipe goods
             String id_goods = (String) storageObject.get("id_goods");
-            System.out.println("ID GOODS: "+id_goods);
+            System.out.println("ID GOODS: " + id_goods);
 
             //Get harga goods
             Object hrg_goods = storageObject.get("hrg_goods");
-            System.out.println("HARGA GOODS: "+hrg_goods);
+            System.out.println("HARGA GOODS: " + hrg_goods);
 
             //Get tipe goods
             String tipe_goods = (String) storageObject.get("tipe_goods");
-            System.out.println("TIPE GOODS: "+tipe_goods);
+            System.out.println("TIPE GOODS: " + tipe_goods);
             System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
         } catch (Exception e) {
 
         }
         //storeObject
     }
-    private static void printJSONObj(File file){
+
+    private static void printJSONObj(File file) {
         JSONParser jsonParser = new JSONParser();
 
         if (file.exists()) {
@@ -61,7 +63,7 @@ public class IndoStorSystem extends DatabaseModelObject {
 
                 System.out.println();
 
-                JSONArray storageList = (JSONArray)slide.get("brosnan");
+                JSONArray storageList = (JSONArray) slide.get("brosnan");
 
                 storageList.forEach(str -> parseStoreObject((org.json.simple.JSONObject) str));
             } catch (FileNotFoundException ignored) {
@@ -396,7 +398,7 @@ public class IndoStorSystem extends DatabaseModelObject {
     public static Goods defineAttributeToWrite(String nmGoods, int hrgGoods, String idGoods, Tipe tipeGoods, String nmStore, int numStrge) {
 
         JSONObject goodsDetail = new JSONObject();
-        JSONObject storage = new JSONObject();
+        JSONObject storageJSONObj = new JSONObject();
         JSONObject store = new JSONObject();
 
         JSONArray jsonArrayStore = new JSONArray();
@@ -407,34 +409,58 @@ public class IndoStorSystem extends DatabaseModelObject {
 
         File file = new File("/E:/UI/Kuliah/Sem 3/DDP2/TP3/src/data.json");
 
-        try (FileWriter jsonWrite = new FileWriter(file, true)) {
+        try {
             //STORE dan STORAGE JADI ARRAY, MANTAP DAH
             goodsDetail.put("nm_goods", nmGoods);
             goodsDetail.put("hrg_goods", hrgGoods);
             goodsDetail.put("id_goods", idGoods);
             goodsDetail.put("tipe_goods", tipeGoods.toString());
 
-            storage.put("storage" + (numStrge), goodsDetail);
-            jsonArrayStorage.add(storage);
+            storageJSONObj.put("storage" + (numStrge), goodsDetail);
+            jsonArrayStorage.add(storageJSONObj);
 
-            store.put(nmStore, jsonArrayStorage);
+            // TODO: 11/23/2019 CEK FILE UDAH ADA ATAU BELOM
+            if (file.exists()) {
+                JSONParser jsonParser = new JSONParser();
 
-            jsonArrayStore.add(store);
-//            jsonArrayStore = (JSONArray)store.get(nmStore);
-            //jsonArraySISTEM.put(jsonArrayStore);
+                try (FileReader fileReader = new FileReader(file)) {
+                    Object obj = jsonParser.parse(fileReader);
 
-            jsonWrite.write(jsonArrayStore.toString());
-            jsonWrite.flush();
+                    JSONArray storeList = (JSONArray) obj;
+
+                    Iterator iteStore = storeList.iterator();
+                    org.json.simple.JSONObject slide = (org.json.simple.JSONObject) iteStore.next();
+
+                    JSONArray storageList = (JSONArray) slide.get("brosnan");
+                    storageList.add(storageJSONObj);
+
+                    FileWriter jsonWrite = new FileWriter(file);
+
+                    jsonWrite.write(storageList.toString());
+                    jsonWrite.flush();
+
+                } catch (FileNotFoundException ignored) {
+
+                } catch (IOException | ParseException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                FileWriter jsonWrite = new FileWriter(file);
+
+                jsonWrite.write(storageJSONObj.toString());
+                jsonWrite.flush();
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         return null;
     }
 
 
-    public static void tambahBarang(String nmBarang, String tipeBarang, int hrgBarang, int qtyBarang, String command) {
+    private static void tambahBarang(String nmBarang, String tipeBarang, int hrgBarang, int qtyBarang, String command) {
 
         GoodsFactory idsgtsu = new IndoSangatsuGoodsFactory();
         ConsumableGoods consumableGoods = idsgtsu.createConsumablesGoods();
