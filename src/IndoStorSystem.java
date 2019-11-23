@@ -1,23 +1,76 @@
 import org.jetbrains.annotations.NotNull;
+//import org.json.JSONArray;
+import org.json.simple.JSONArray;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import javax.management.OperationsException;
 import javax.naming.OperationNotSupportedException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.DuplicateFormatFlagsException;
-import java.util.Scanner;
-
-import java.io.FileWriter;
-
+import java.util.*;
 
 public class IndoStorSystem extends DatabaseModelObject {
 
+    private static Store str = new Store();
+    private static ArrayList<Store> lstStr = str.getList_store();
 
-    public static Store str = new Store();
-    public static ArrayList<Store> lstStr = str.getList_store();
+    private static int iterateObj = 0;
+    private static void parseStoreObject(org.json.simple.JSONObject store) {
+
+        //Get employee object within list
+        try {
+
+            System.out.println("=-=-=-=-=-BARANG "+(++iterateObj)+"=-=-=-=-=-");
+
+            org.json.simple.JSONObject storageObject = (org.json.simple.JSONObject) store.get("storage0");
+
+            //Get nama goods
+            String nm_goods = (String) storageObject.get("nm_goods");
+            System.out.println("NAMA GOODS: "+nm_goods);
+
+            //Get tipe goods
+            String id_goods = (String) storageObject.get("id_goods");
+            System.out.println("ID GOODS: "+id_goods);
+
+            //Get harga goods
+            Object hrg_goods = storageObject.get("hrg_goods");
+            System.out.println("HARGA GOODS: "+hrg_goods);
+
+            //Get tipe goods
+            String tipe_goods = (String) storageObject.get("tipe_goods");
+            System.out.println("TIPE GOODS: "+tipe_goods);
+            System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+        } catch (Exception e) {
+
+        }
+        //storeObject
+    }
+    private static void printJSONObj(File file){
+        JSONParser jsonParser = new JSONParser();
+
+        if (file.exists()) {
+            try (FileReader fileReader = new FileReader(file)) {
+                Object obj = jsonParser.parse(fileReader);
+
+                JSONArray storeList = (JSONArray) obj;
+
+                Iterator iteStore = storeList.iterator();
+                org.json.simple.JSONObject slide = (org.json.simple.JSONObject) iteStore.next();
+
+                System.out.println();
+
+                JSONArray storageList = (JSONArray)slide.get("brosnan");
+
+                storageList.forEach(str -> parseStoreObject((org.json.simple.JSONObject) str));
+            } catch (FileNotFoundException ignored) {
+
+            } catch (IOException | ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public static void main(String[] args) throws OperationNotSupportedException {
 
@@ -28,10 +81,8 @@ public class IndoStorSystem extends DatabaseModelObject {
         ConsumableGoods consumableGoods = idsgtsu.createConsumablesGoods();
         Foods food = idsgtsu.createFoods();
         PoisonousGoods poisonousGoods = idsgtsu.createPoisonousGoods();
-//        Goods neutralGoods = idsgtsu.createNeutralGoods();
 
         String perintah = "tampilkan";
-        Goods prd = new Goods();
 
         ArrayList<Store> listStore = new ArrayList<>();
 
@@ -42,17 +93,16 @@ public class IndoStorSystem extends DatabaseModelObject {
         String nm_produk;
         int hrg_produk;
         int jml_produk;
-        String id_lama = "";
-        String id_produk = "";
         String tipe_produkString;
-        Tipe tipe_produk;
-        String tipe_id_prod;
 
         //store
         String nm_store;
 
         System.out.println("=====SIMULASI PENYIMPANAN BARANG=====");
         System.out.print("tekan enter . . .");
+
+        File file = new File("/E:/UI/Kuliah/Sem 3/DDP2/TP3/src/data.json");
+        printJSONObj(file);
 
         loop:
         do {
@@ -87,7 +137,7 @@ public class IndoStorSystem extends DatabaseModelObject {
                         }
                     }
 
-                    if (cekAda == false) {
+                    if (!cekAda) {
                         System.out.println("Tidak ada store dengan nama tersebut");
                     }
 
@@ -113,7 +163,7 @@ public class IndoStorSystem extends DatabaseModelObject {
                         //Handling data kosong!
                     }
 
-                    if (kosong == true) {
+                    if (kosong) {
                         System.out.println("Data tidak ditemukan");
                         continue;
                     } else {
@@ -135,7 +185,7 @@ public class IndoStorSystem extends DatabaseModelObject {
                     break;
 
                 case "tambah":
-                    // TODO: 11/6/2019 TAMBAH 
+                    // TODO: 11/6/2019 TAMBAH
                     switch (cmd[1]) {
                         case "store":
                             System.out.print("Masukan nama Store: ");
@@ -174,12 +224,14 @@ public class IndoStorSystem extends DatabaseModelObject {
 
                         case "barang":
                             //CEK NAMA BARANG UDAH BENER GA SIH . . .
-                            cmd[2] = cmd[2].toLowerCase();
+
                             try {
                                 if (cmd.length < 3) {
                                     System.out.println("Nama store tidak dimasukan");
                                     throw new ArrayIndexOutOfBoundsException();
                                 }
+
+                                cmd[2] = cmd[2].toLowerCase();
 
                                 //cek ada atau engga
                                 boolean adaengga = false;
@@ -188,7 +240,7 @@ public class IndoStorSystem extends DatabaseModelObject {
                                         adaengga = true;
                                     }
                                 }
-                                if (adaengga == false) {
+                                if (!adaengga) {
                                     System.out.println("Nama barang tidak ada didatabase");
                                     throw new OperationNotSupportedException();
                                 }
@@ -325,14 +377,14 @@ public class IndoStorSystem extends DatabaseModelObject {
 
 
     public static String recCheckId(String idlama, int index, int idx_Store, int idx_Storage) {
-        // TODO: 11/6/2019 Yang dipanggil id kalo di method main diatas. 
+        // TODO: 11/6/2019 Yang dipanggil id kalo di method main diatas.
         if (index == -1) {
             return idlama;
         } else {
             //  10/20/2019 AMBIL VARIABLE DARI Goods yang ada di store
             Storage strge = lstStr.get(idx_Store).getList_storage().get(idx_Storage);
             if (idlama.substring(0, 4).equals(strge.getGoods().get(index).getId().substring(0, 4))) {
-                // TODO: 11/6/2019 KALO UDAH DAPET YANG SAMA, TAMBAHIN DENGAN METHOD recFixId() 
+                // TODO: 11/6/2019 KALO UDAH DAPET YANG SAMA, TAMBAHIN DENGAN METHOD recFixId()
                 return recFixId(idlama, idx_Store);
             } else {
                 // TODO: 11/6/2019 Kalo ga sama dengan yang diatas, iterasi lagi
@@ -341,38 +393,46 @@ public class IndoStorSystem extends DatabaseModelObject {
         }
     }
 
-
     public static Goods defineAttributeToWrite(String nmGoods, int hrgGoods, String idGoods, Tipe tipeGoods, String nmStore, int numStrge) {
 
         JSONObject goodsDetail = new JSONObject();
+        JSONObject storage = new JSONObject();
+        JSONObject store = new JSONObject();
+
+        JSONArray jsonArrayStore = new JSONArray();
+        JSONArray jsonArrayStorage = new JSONArray();
 
         System.out.println("Memasukan data ke database . . .");
         int i = 0;
 
-        try (FileWriter file = new FileWriter("/E:/UI/Kuliah/Sem 3/DDP2/TP3/src/data.json")) {
+        File file = new File("/E:/UI/Kuliah/Sem 3/DDP2/TP3/src/data.json");
 
+        try (FileWriter jsonWrite = new FileWriter(file, true)) {
+            //STORE dan STORAGE JADI ARRAY, MANTAP DAH
             goodsDetail.put("nm_goods", nmGoods);
             goodsDetail.put("hrg_goods", hrgGoods);
             goodsDetail.put("id_goods", idGoods);
             goodsDetail.put("tipe_goods", tipeGoods.toString());
 
-            JSONObject storage = new JSONObject();
             storage.put("storage" + (numStrge), goodsDetail);
+            jsonArrayStorage.add(storage);
 
-            JSONObject store = new JSONObject();
-            store.put(nmStore, storage);
+            store.put(nmStore, jsonArrayStorage);
 
-            file.write(store.toString());
-            file.flush();
+            jsonArrayStore.add(store);
+//            jsonArrayStore = (JSONArray)store.get(nmStore);
+            //jsonArraySISTEM.put(jsonArrayStore);
+
+            jsonWrite.write(jsonArrayStore.toString());
+            jsonWrite.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
         return null;
     }
 
-
-//    public void defineAttributeToWrite(String nmGoods, int hrgGoods, String idGoods, Tipe tipeGoods, String nmStore, int numStrge) {
-//    }
 
     public static void tambahBarang(String nmBarang, String tipeBarang, int hrgBarang, int qtyBarang, String command) {
 

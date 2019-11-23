@@ -1,10 +1,37 @@
-{
-  "store brosnan": {
-    "storage1": {
-      "nm_goods": "racun",
-      "hrg_goods": 337987,
-      "id_goods": "",
-      "tipe_goods": "BERACUN"
-    }
+[
+  {
+    "brosnan": [
+      {
+        "storage0": {
+          "nm_goods": "brosnanjing",
+          "hrg_goods": 2079169,
+          "id_goods": "EFFD29",
+          "tipe_goods": "MAKANAN"
+        }
+      },
+      {
+        "storage0": {
+          "nm_goods": "rizanjing",
+          "hrg_goods": 303614362,
+          "id_goods": "UGPD49",
+          "tipe_goods": "BERACUN"
+        }
+      },{
+        "storage0": {
+          "nm_goods": "arianjing",
+          "hrg_goods": 582752,
+          "id_goods": "AGPD49",
+          "tipe_goods": "BERACUN"
+        }
+      },{
+        "storage0": {
+          "nm_goods": "jeremianjing",
+          "hrg_goods": 303614362,
+          "id_goods": "JGPD49",
+          "tipe_goods": "BERACUN"
+        }
+      }
+    ]
   }
-}
+]
+

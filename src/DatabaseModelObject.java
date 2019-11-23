@@ -10,6 +10,9 @@ import java.io.FileWriter;
 
 public abstract class DatabaseModelObject {
 
+    public static Goods defineAttributeToWrite(String nmGoods, int hrgGoods, String idGoods, Tipe tipeGoods, String nmStore, int numStrge) {
+        return null;
+    }
 
     public final void save(String databaseName){
 
@@ -18,9 +21,6 @@ public abstract class DatabaseModelObject {
         writeToDatabase();
     }
 
-    public static Goods defineAttributeToWrite(String nmGoods, int hrgGoods, String idGoods, Tipe tipeGoods, String nmStore, int numStrge){
-        return null;
-    }
 
     public void writeToDatabase(){
         //@TODO Implementasi tulis ke file
