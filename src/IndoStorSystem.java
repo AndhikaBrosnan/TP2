@@ -431,12 +431,20 @@ public class IndoStorSystem extends DatabaseModelObject {
                     Iterator iteStore = storeList.iterator();
                     org.json.simple.JSONObject slide = (org.json.simple.JSONObject) iteStore.next();
 
+                    //put array dulu
+
                     JSONArray storageList = (JSONArray) slide.get("brosnan");
                     storageList.add(storageJSONObj);
 
                     FileWriter jsonWrite = new FileWriter(file);
 
-                    jsonWrite.write(storageList.toString());
+                    org.json.simple.JSONObject storeSaya = new org.json.simple.JSONObject();
+                    storeSaya.put("brosnan",storageList);
+
+                    JSONArray arrAll = new JSONArray();
+                    arrAll.add(storeSaya);
+
+                    jsonWrite.write(arrAll.toString());
                     jsonWrite.flush();
 
                 } catch (FileNotFoundException ignored) {
